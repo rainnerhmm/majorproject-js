@@ -13,5 +13,8 @@ function setup() {
 function draw() {
   background(220);
 
-  circle(mouseX, mouseY, 100);
+  push();
+  translate(mouseX, mouseY, 0);
+  sphere(50);
+  pop();
 }
