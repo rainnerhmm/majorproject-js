@@ -7,6 +7,7 @@
 
 // links 
 // https://p5js.org/examples/
+// https://editor.p5js.org/codingtrain/sketches/hZWcc0Vi-
 
 let newCreature;
 
@@ -30,17 +31,17 @@ class Creature {
   }
 
   moveCreature() {
-    // pick random direction movement
-    let dx = noise(this.xTime);
-    let dy = noise(this.yTime);
+    // causes the creature to fall
+    if (this.y - this.speed < this.y) {
+      this.speed++;
+      this.y = this.y + this.speed;
+    }
 
-    // scale to the movement speed
-    this.dx = map(dx, 0, 1, -this.speed, this.speed);
-    this.dy = map(dy, 0, 1, -this.speed, this.speed);
-
-    // move point
-    this.x += this.dx;
-    this.y += this.dy;
+    if (mouseIsPressed) { // for debugging, teleports creature to mouse coords
+      this.speed = 1;
+      this.x = mouseX;
+      this.y = mouseY;
+    }
   }
 
   wrapCreature() {
@@ -65,7 +66,7 @@ class Creature {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  newCreature = new Creature(width / 2, height/2, width / 50);
+  newCreature = new Creature(width / 2, height / 2, width / 50);
 }
 
 function draw() {
