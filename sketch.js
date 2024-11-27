@@ -7,7 +7,9 @@
 
 // links 
 // https://p5js.org/examples/
+// https://editor.p5js.org/codingtrain/collections
 // https://editor.p5js.org/codingtrain/sketches/hZWcc0Vi-
+// https://editor.p5js.org/codingtrain/sketches/YzFpEGdsl
 
 let newCreature;
 
@@ -22,15 +24,38 @@ class Creature {
     this.color = color(random(255), random(255), random(255));
     this.health = 100;
     this.hunger = 100;
+    this.mouseJoint = false;
   }
 
-  dispCreature() {
+  update(x, y) {
+    this.display();
+    this.move();
+    this.wrap();
+
+  }
+
+  display() {
     noStroke();
     fill(this.color);
     circle(this.x, this.y, this.radius * 2);
+    if (!this.mouseJoint && mouseIsPressed) {
+
+      let posA = [this.x, this.y];
+      let posB = [mouseX, mouseY];
+      console.log(posA);
+
+      // We can get the two anchor points
+      let v1 = [posA[0], posA[1]];
+      let v2 = [posB[0], posB[1]];
+      // And just draw a line
+      stroke(this.color);
+      strokeWeight(2);
+
+      line(v1[0], v1[1], v2[0], v2[1]);
+    }
   }
 
-  moveCreature() {
+  move() {
     // causes the creature to fall
     if (this.y - this.speed < this.y) {
       this.speed++;
@@ -44,7 +69,7 @@ class Creature {
     }
   }
 
-  wrapCreature() {
+  wrap() {
     // teleports across the screen if you fall off
     if (this.x - this.radius > width) { // right
       this.x -= width;
@@ -71,9 +96,7 @@ function setup() {
 
 function draw() {
   background(220);
-  newCreature.dispCreature();
-  newCreature.moveCreature();
-  newCreature.wrapCreature();
+  newCreature.update();
 
 }
 
