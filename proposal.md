@@ -5,9 +5,9 @@ Putting together everything I've learned, I'm going to make a 'Digital Pet' Game
 
 ## list of must haves
 #### the basics of a tamagotchi
-- [ ] system clock support
+- [x] system clock support
 - [ ] input player name (and birthday?) 
-- [ ] creature hatching or (forming) after a certain period
+- [x] creature hatching or (forming) after a certain period
 - [ ] creature name
 - [ ] creature birthday based on system clock
 - [ ] food to feed the creature
