@@ -25,6 +25,7 @@ class Creature {
     this.health = 100;
     this.hunger = 100;
     this.mouseJoint = false;
+    this.fallState = false;
   }
 
   update(x, y) {
@@ -57,10 +58,20 @@ class Creature {
 
   move() {
     // causes the creature to fall
-    if (this.y - this.speed < this.y) {
-      this.speed++;
-      this.y = this.y + this.speed;
+    if (this.y < height) {
+      this.fallState = true;
+      if (this.fallState) {
+        this.speed++;
+        this.y = this.y + this.speed;
+      }
     }
+    else if (this.y >= height) {
+      this.fallState = false;
+      if (!this.fallState) {
+        this.y = height - this.radius
+      }
+    }
+
 
     if (mouseIsPressed) { // for debugging, teleports creature to mouse coords
       this.speed = 1;
@@ -77,14 +88,6 @@ class Creature {
 
     if (this.x + this.radius < 0) { // left
       this.x += width;
-    }
-
-    if (this.y - this.radius > height) { // bottom
-      this.y -= height;
-    }
-
-    if (this.y + this.radius < 0) { // top
-      this.y += height;
     }
   }
 };
