@@ -13,6 +13,8 @@ Putting together everything I've learned, I'm going to make a 'Digital Pet' Game
 - [ ] food to feed the creature
 - [ ] hunger meter
 - [ ] death support
+- [ ] variety of music
+- [ ] sound effects
 
 ## list of nice haves
 #### my own ideas and some tamagotchi ones

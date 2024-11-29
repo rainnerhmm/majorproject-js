@@ -31,6 +31,7 @@ class Creature {
 
   update(x, y) {
     this.display();
+    this.birthInfo();
   }
 
   display() {
@@ -40,7 +41,7 @@ class Creature {
     textAlign(CENTER, CENTER);
     textSize(windowWidth / 5);
     text(this.status, this.x, this.y);
-    textSize(windowWidth / 7);
+    textSize(windowWidth / 10);
     text(this.counter, this.x, this.y);
   }
 
@@ -49,10 +50,22 @@ class Creature {
       this.counter++;
     }
 
-    if (this.counter >= 100) {
+    if (this.counter >= 1) {
       this.status = '🦃';
-      this.counter = 0;
+      this.counter = '';
     }
+  }
+
+  birthInfo() {
+    if (this.status === '🦃') {
+      let name = createInput('');
+      
+      textSize(windowWidth / 25);
+      text('creature name:', windowWidth/2, windowHeight/1.3);
+      name.position(windowWidth/2.25, windowHeight/1.2);
+      name.input(repaint);
+    }
+
   }
 };
 
@@ -73,7 +86,7 @@ function time() {
   minuteOf = minute();
   secondOf = second();
   textSize(windowWidth / 25);
-  text(`Time: ${hourOf}:${minuteOf}:${secondOf} p.m.`, windowWidth / 2, 400);
+  text(`Time: ${hourOf}:${minuteOf}:${secondOf} p.m.`, windowWidth / 2, windowHeight / 5);
 }
 
 function windowResized() {
@@ -82,4 +95,10 @@ function windowResized() {
 
 function mouseClicked() {
   newCreature.egg();
+}
+
+function repaint() {
+  background(200);
+  let msg = input.value();
+  text(msg, 5, 50);
 }
