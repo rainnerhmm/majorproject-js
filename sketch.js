@@ -26,12 +26,14 @@ class Creature {
     this.health = 100;
     this.hunger = 100;
     this.counter = 0;
-    this.status = '🥚';
+    this.creatureegg = '🥚';
+    this.creature = '🇨🇭';
+    this.status = this.creatureegg;
+    this.name = '';
   }
 
   update(x, y) {
     this.display();
-    this.birthInfo();
   }
 
   display() {
@@ -43,30 +45,32 @@ class Creature {
     text(this.status, this.x, this.y);
     textSize(windowWidth / 10);
     text(this.counter, this.x, this.y);
+
+    if (this.status === this.creature) {
+      textSize(windowWidth / 25);
+      text(`creature name: ${this.name}`, windowWidth/2, windowHeight/1.3);
+    }
   }
 
   egg() {
-    if (this.status === '🥚') {
+    if (this.status === this.creatureegg) {
       this.counter++;
     }
 
     if (this.counter >= 1) {
-      this.status = '🦃';
+      this.status = this.creature;
       this.counter = '';
     }
   }
 
-  birthInfo() {
-    if (this.status === '🦃') {
-      let name = createInput('');
-      
-      textSize(windowWidth / 25);
-      text('creature name:', windowWidth/2, windowHeight/1.3);
-      name.position(windowWidth/2.25, windowHeight/1.2);
-      name.input(repaint);
+  inputs(input) {
+    if (this.status === this.creature) {
+      this.name += input;
     }
-
   }
+  // birthInfo(intextput) {
+
+  // }
 };
 
 function setup() {
@@ -101,4 +105,9 @@ function repaint() {
   background(200);
   let msg = input.value();
   text(msg, 5, 50);
+}
+
+function keyPressed() {
+  // use keycodes tp detirmine if key is allowed
+  newCreature.inputs(keyCode);
 }

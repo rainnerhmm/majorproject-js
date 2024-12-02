@@ -8,7 +8,7 @@ Putting together everything I've learned, I'm going to make a 'Digital Pet' Game
 - [x] system clock support
 - [ ] input player name (and birthday?) 
 - [x] creature hatching or (forming) after a certain period
-- [ ] creature name
+- [x] creature name
 - [ ] creature birthday based on system clock
 - [ ] food to feed the creature
 - [ ] hunger meter
