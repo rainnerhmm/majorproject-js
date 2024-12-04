@@ -15,8 +15,13 @@ let hourOf;
 let minuteOf;
 let secondOf;
 
-let newCreature;
+let newCreature = ``;
 
+
+// Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
+// Health, hunger, and whatever other meters
+
+// the class will be split into sub classes that represent its lifestate, egg, young, adult, old
 class Creature {
   constructor(x, y, r) {
     this.x = x;
@@ -26,10 +31,10 @@ class Creature {
     this.health = 100;
     this.hunger = 100;
     this.counter = 0;
-    this.creatureegg = '🥚';
-    this.creature = '🇨🇭';
+    this.creatureegg = `🥚`;
+    this.creature = `🇨🇭`;
     this.status = this.creatureegg;
-    this.name = '';
+    this.name = ``;
   }
 
   update(x, y) {
@@ -46,10 +51,10 @@ class Creature {
     textSize(windowWidth / 10);
     text(this.counter, this.x, this.y);
 
-    if (this.status === this.creature) {
-      textSize(windowWidth / 25);
-      text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
-    }
+    // if (this.status === this.creature) {
+    //   textSize(windowWidth / 25);
+    //   text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
+    // }
   }
 
   egg() {
@@ -59,19 +64,22 @@ class Creature {
 
     if (this.counter >= 1) {
       this.status = this.creature;
-      this.counter = '';
+      this.counter = ``;
     }
   }
 
-  inputs(input) {
-    if (this.status === this.creature) {
-      this.name += input;
-    }
-  }
+  // info(theInfo) {
+  //   if (this.status === this.creature) {
+  //     this.name += input;
+  //   }
+  // }
   // birthInfo(intextput) {
 
   // }
 };
+
+let creatureName = ``;
+let keyboardState = `type`;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -82,6 +90,8 @@ function draw() {
   background(220);
   newCreature.update();
   time();
+  text(`creature name: ${creatureName}`, windowWidth / 2, windowHeight / 1.3);
+  text(keyboardState, windowWidth / 2, windowHeight / 1.1);
 
 }
 
@@ -108,12 +118,23 @@ function repaint() {
 }
 
 function keyPressed() {
-  // use keycodes tp detirmine if key is allowed
-  if (keyCode >= 65 && keyCode <= 90) {
-    newCreature.inputs(key);
+  // use keycodes to determine if key is allowed
+  if (keyIsDown() && keyCode === 8) {
+    keyboardState = `delete`;
+    inputInfo(creatureName.slice(0, creatureName.length-1));
   }
-  else if (keyCode === 8) {
-    newCreature.inputs('');
+  else if (keyCode >= 65 && keyCode <= 90) {
+    keyboardState = `type`;
+    inputInfo(key);
   }
-
 }
+
+function inputInfo(input) {
+  let inputState = `creatureName`; // what will be input, acts as a throughline to input information
+  if (inputState === `creatureName` && keyboardState === `type`) {
+    creatureName += input;
+  }
+  if (keyboardState === `delete`) {
+    creatureName = input;
+  }
+}  // possibly consider switch cases instead of if statments later on
