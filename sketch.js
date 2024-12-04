@@ -111,15 +111,9 @@ function mouseClicked() {
   newCreature.egg();
 }
 
-function repaint() {
-  background(200);
-  let msg = input.value();
-  text(msg, 5, 50);
-}
-
-function keyPressed() {
+function keyReleased() {
   // use keycodes to determine if key is allowed
-  if (keyIsDown() && keyCode === 8) {
+  if (keyCode === 8) {
     keyboardState = `delete`;
     inputInfo(creatureName.slice(0, creatureName.length-1));
   }
@@ -138,3 +132,5 @@ function inputInfo(input) {
     creatureName = input;
   }
 }  // possibly consider switch cases instead of if statments later on
+
+
