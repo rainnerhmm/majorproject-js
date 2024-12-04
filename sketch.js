@@ -48,7 +48,7 @@ class Creature {
 
     if (this.status === this.creature) {
       textSize(windowWidth / 25);
-      text(`creature name: ${this.name}`, windowWidth/2, windowHeight/1.3);
+      text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
     }
   }
 
@@ -109,5 +109,11 @@ function repaint() {
 
 function keyPressed() {
   // use keycodes tp detirmine if key is allowed
-  newCreature.inputs(keyCode);
+  if (keyCode >= 65 && keyCode <= 90) {
+    newCreature.inputs(key);
+  }
+  else if (keyCode === 8) {
+    newCreature.inputs('');
+  }
+
 }
