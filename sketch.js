@@ -16,6 +16,7 @@ let minuteOf;
 let secondOf;
 
 let newCreature = ``;
+let stateFlag = `type`;
 
 
 // Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
@@ -90,9 +91,12 @@ function draw() {
   background(220);
   newCreature.update();
   time();
-  text(`creature name: ${creatureName}`, windowWidth / 2, windowHeight / 1.3);
-  text(keyboardState, windowWidth / 2, windowHeight / 1.1);
 
+  if (stateFlag === `type`) {
+    text(`creature name: ${creatureName}`, windowWidth / 2, windowHeight / 1.3);
+    text(keyboardState, windowWidth / 2, windowHeight / 1.1);
+    textSystem(key);
+  }
 }
 
 function time() {
@@ -111,17 +115,6 @@ function mouseClicked() {
   newCreature.egg();
 }
 
-function keyReleased() {
-  // use keycodes to determine if key is allowed
-  if (keyCode === 8) {
-    keyboardState = `delete`;
-    inputInfo(creatureName.slice(0, creatureName.length-1));
-  }
-  else if (keyCode >= 65 && keyCode <= 90) {
-    keyboardState = `type`;
-    inputInfo(key);
-  }
-}
 
 function inputInfo(input) {
   let inputState = `creatureName`; // what will be input, acts as a throughline to input information
@@ -133,4 +126,14 @@ function inputInfo(input) {
   }
 }  // possibly consider switch cases instead of if statments later on
 
-
+function textSystem(keyEvent) {
+  // use keycodes to determine if key is allowed
+  if (keyCode === 8 && keyEvent.keydown === true) {
+    keyboardState = `delete`;
+    creatureName = creatureName.slice(0, creatureName.length - 1);
+  }
+  else if (keyCode >= 65 && keyCode <= 90) {
+    keyboardState = `type`;
+    creatureName = keyEvent;
+  }
+}
