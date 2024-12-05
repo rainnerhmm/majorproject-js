@@ -10,6 +10,7 @@
 // https://editor.p5js.org/codingtrain/collections
 // https://editor.p5js.org/codingtrain/sketches/hZWcc0Vi-
 // https://editor.p5js.org/codingtrain/sketches/YzFpEGdsl
+// https://editor.p5js.org/michellu0929/sketches/KL0ydodUa
 
 let hourOf;
 let minuteOf;
@@ -91,6 +92,7 @@ function draw() {
   background(220);
   newCreature.update();
   time();
+  text(Math.round(frameRate()), windowWidth / 2, windowHeight / 9);
 
   if (stateFlag === `type`) {
     text(`creature name: ${creatureName}`, windowWidth / 2, windowHeight / 1.3);
@@ -128,12 +130,14 @@ function inputInfo(input) {
 
 function textSystem(keyEvent) {
   // use keycodes to determine if key is allowed
-  if (keyCode === 8 && keyEvent.keydown === true) {
-    keyboardState = `delete`;
-    creatureName = creatureName.slice(0, creatureName.length - 1);
-  }
-  else if (keyCode >= 65 && keyCode <= 90) {
-    keyboardState = `type`;
-    creatureName = keyEvent;
+  if (keyIsPressed && millis() % 5 === 0) {
+    if (keyCode === 8) {
+      keyboardState = `delete`;
+      creatureName = creatureName.slice(0, creatureName.length - 1);
+    }
+    if (keyCode >= 65 && keyCode <= 90) {
+      keyboardState = `type`;
+      creatureName += keyEvent;
+    }
   }
 }
