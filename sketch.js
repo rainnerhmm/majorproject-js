@@ -81,7 +81,11 @@ class Creature {
 };
 
 let creatureName = ``;
-let keyboardState = `type`;
+let keyboardState = 'null';
+
+const TEXT_DURATION = 500;
+
+let lastSwitchedTime = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -93,11 +97,10 @@ function draw() {
   newCreature.update();
   time();
   text(Math.round(frameRate()), windowWidth / 2, windowHeight / 9);
-
+  text(`creature name: ${creatureName}`, windowWidth / 2, windowHeight / 1.3);
+  text(keyboardState, windowWidth / 2, windowHeight / 1.1);
   if (stateFlag === `type`) {
-    text(`creature name: ${creatureName}`, windowWidth / 2, windowHeight / 1.3);
-    text(keyboardState, windowWidth / 2, windowHeight / 1.1);
-    textSystem(key);
+    textSystem();
   }
 }
 
@@ -128,16 +131,36 @@ function inputInfo(input) {
   }
 }  // possibly consider switch cases instead of if statments later on
 
-function textSystem(keyEvent) {
-  // use keycodes to determine if key is allowed
-  if (keyIsPressed && millis() % 5 === 0) {
+
+
+function textSystem() {
+  if (keyboardState === 'type') {
+    creatureName += key;
+  }
+  if (keyboardState === 'delete' && creatureName.length >= 1) {
+    creatureName = creatureName.slice(0, creatureName.length - 1);
+  }
+}
+
+function keyPressed() {
+  lastSwitchedTime = millis();
+  if (keyCode === 8) {
+    keyboardState = `delete`;
+  }
+  else if (keyCode >= 65 && keyCode <= 90) {
+    keyboardState = `type`;
+  }
+}
+
+function keyReleased() {
+  if (millis() > lastSwitchedTime + TEXT_DURATION) {
     if (keyCode === 8) {
-      keyboardState = `delete`;
-      creatureName = creatureName.slice(0, creatureName.length - 1);
+      keyboardState = `null`;
     }
     if (keyCode >= 65 && keyCode <= 90) {
-      keyboardState = `type`;
-      creatureName += keyEvent;
+      keyboardState = `null`;
     }
   }
 }
+
+// use keycodes to determine if key is allowed
