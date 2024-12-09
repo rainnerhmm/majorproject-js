@@ -3,6 +3,7 @@
 // Nov 18th, 2024
 //
 // Extra for Experts:
+// i did your mother
 // - describe what you did to take this project "above and beyond"
 
 // links 
@@ -19,7 +20,6 @@ let secondOf;
 let newCreature = ``;
 let stateFlag = `type`;
 
-
 // Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
 // Health, hunger, and whatever other meters
 
@@ -34,7 +34,7 @@ class Creature {
     this.hunger = 100;
     this.counter = 0;
     this.creatureegg = `🥚`;
-    this.creature = `🇨🇭`;
+    this.creature = `🐔`;
     this.status = this.creatureegg;
     this.name = ``;
   }
@@ -143,23 +143,23 @@ function textSystem() {
 }
 
 function keyPressed() {
-  lastSwitchedTime = millis();
-  if (keyCode === 8) {
-    keyboardState = `delete`;
-  }
-  else if (keyCode >= 65 && keyCode <= 90) {
-    keyboardState = `type`;
+  if (millis() > lastSwitchedTime + TEXT_DURATION) {
+    lastSwitchedTime = millis();
+    if (keyCode === 8) {
+      keyboardState = `delete`;
+    }
+    else if (keyCode >= 65 && keyCode <= 90) {
+      keyboardState = `type`;
+    }
   }
 }
 
 function keyReleased() {
-  if (millis() > lastSwitchedTime + TEXT_DURATION) {
-    if (keyCode === 8) {
-      keyboardState = `null`;
-    }
-    if (keyCode >= 65 && keyCode <= 90) {
-      keyboardState = `null`;
-    }
+  if (keyCode === 8) {
+    keyboardState = `null`;
+  }
+  if (keyCode >= 65 && keyCode <= 90) {
+    keyboardState = `null`;
   }
 }
 
