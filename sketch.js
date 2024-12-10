@@ -3,7 +3,6 @@
 // Nov 18th, 2024
 //
 // Extra for Experts:
-// i did your mother
 // - describe what you did to take this project "above and beyond"
 
 // links 
@@ -13,17 +12,15 @@
 // https://editor.p5js.org/codingtrain/sketches/YzFpEGdsl
 // https://editor.p5js.org/michellu0929/sketches/KL0ydodUa
 
-let hourOf;
-let minuteOf;
-let secondOf;
-
 let newCreature = ``;
-let stateFlag = `type`;
+let flag = false;
+let keyboardState = 'null';
 
 // Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
 // Health, hunger, and whatever other meters
 
 // the class will be split into sub classes that represent its lifestate, egg, young, adult, old
+
 class Creature {
   constructor(x, y, r) {
     this.x = x;
@@ -53,6 +50,10 @@ class Creature {
     textSize(windowWidth / 10);
     text(this.counter, this.x, this.y);
 
+    // birth info
+    textSize(windowWidth / 30);
+    text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
+
     // if (this.status === this.creature) {
     //   textSize(windowWidth / 25);
     //   text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
@@ -67,25 +68,10 @@ class Creature {
     if (this.counter >= 1) {
       this.status = this.creature;
       this.counter = ``;
+      flag = true;
     }
   }
-
-  // info(theInfo) {
-  //   if (this.status === this.creature) {
-  //     this.name += input;
-  //   }
-  // }
-  // birthInfo(intextput) {
-
-  // }
 };
-
-let creatureName = ``;
-let keyboardState = 'null';
-
-const TEXT_DURATION = 500;
-
-let lastSwitchedTime = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -95,19 +81,25 @@ function setup() {
 function draw() {
   background(220);
   newCreature.update();
+
+
+  // displays notable info (debug only)
+  dispFrameRate();
   time();
-  text(Math.round(frameRate()), windowWidth / 2, windowHeight / 9);
-  text(`creature name: ${creatureName}`, windowWidth / 2, windowHeight / 1.3);
   text(keyboardState, windowWidth / 2, windowHeight / 1.1);
-  if (stateFlag === `type`) {
-    textSystem();
-  }
+}
+
+function dispFrameRate() {
+  let frameRateInput = `FPS: ${Math.round(frameRate())}`;
+  textSize(windowWidth / 45);
+  text(frameRateInput, windowWidth * 0.05, windowHeight * 0.05);
+
 }
 
 function time() {
-  hourOf = hour();
-  minuteOf = minute();
-  secondOf = second();
+  let hourOf = hour();
+  let minuteOf = minute();
+  let secondOf = second();
   textSize(windowWidth / 25);
   text(`Time: ${hourOf}:${minuteOf}:${secondOf} p.m.`, windowWidth / 2, windowHeight / 5);
 }
@@ -120,47 +112,32 @@ function mouseClicked() {
   newCreature.egg();
 }
 
-
-function inputInfo(input) {
-  let inputState = `creatureName`; // what will be input, acts as a throughline to input information
-  if (inputState === `creatureName` && keyboardState === `type`) {
-    creatureName += input;
+function textSystem(input) {
+  if (keyboardState === `type`) {
+    newCreature.name += input;
   }
-  if (keyboardState === `delete`) {
-    creatureName = input;
+  if (keyboardState === `delete` && newCreature.name.length >= 1) {
+    newCreature.name = input;
+  }
+  if (keyboardState === `enter` && newCreature.name.length >= 1) {
+    newCreature.name = input;
   }
 }  // possibly consider switch cases instead of if statments later on
 
 
-
-function textSystem() {
-  if (keyboardState === 'type') {
-    creatureName += key;
-  }
-  if (keyboardState === 'delete' && creatureName.length >= 1) {
-    creatureName = creatureName.slice(0, creatureName.length - 1);
-  }
-}
-
 function keyPressed() {
-  if (millis() > lastSwitchedTime + TEXT_DURATION) {
-    lastSwitchedTime = millis();
+  // use keycodes to determine if key is allowed
+  if (flag) {
+    if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) {
+      keyboardState = `type`;
+      fill(`black`);
+      textSystem(key);
+    }
+
+    // use keycodes to determine if key is allowed
     if (keyCode === 8) {
       keyboardState = `delete`;
-    }
-    else if (keyCode >= 65 && keyCode <= 90) {
-      keyboardState = `type`;
+      textSystem(newCreature.name.slice(0, newCreature.name.length - 1));
     }
   }
 }
-
-function keyReleased() {
-  if (keyCode === 8) {
-    keyboardState = `null`;
-  }
-  if (keyCode >= 65 && keyCode <= 90) {
-    keyboardState = `null`;
-  }
-}
-
-// use keycodes to determine if key is allowed
