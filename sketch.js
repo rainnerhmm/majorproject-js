@@ -21,6 +21,8 @@ let keyboardState = 'null';
 
 // the class will be split into sub classes that represent its lifestate, egg, young, adult, old
 
+
+
 class Creature {
   constructor(x, y, r) {
     this.x = x;
@@ -52,7 +54,7 @@ class Creature {
 
     // birth info
     textSize(windowWidth / 30);
-    text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
+    text(`creature name: ${this.name}_`, windowWidth / 2, windowHeight / 1.3);
 
     // if (this.status === this.creature) {
     //   textSize(windowWidth / 25);
@@ -68,7 +70,7 @@ class Creature {
     if (this.counter >= 1) {
       this.status = this.creature;
       this.counter = ``;
-      flag = true;
+      this.name = textSystem();
     }
   }
 };
@@ -112,16 +114,25 @@ function mouseClicked() {
   newCreature.egg();
 }
 
-function textSystem(input) {
-  if (keyboardState === `type`) {
-    newCreature.name += input;
+function textSystem(input, min = 1, max = 12) {
+  let maxTextLength = max;
+  let minTextLength = min;
+  let textInput = ``;
+  let textLength = textInput.length;
+
+  flag = true;
+  
+  if (keyboardState === `type` && textLength <= maxTextLength) {
+    textInput += input;
   }
-  if (keyboardState === `delete` && newCreature.name.length >= 1) {
-    newCreature.name = input;
+  if (keyboardState === `delete` && textLength >= minTextLength) {
+    textInput = input;
   }
-  if (keyboardState === `enter` && newCreature.name.length >= 1) {
-    newCreature.name = input;
+  if (keyboardState === `enter` && textLength >= minTextLength) {
+    textInput = input;
   }
+
+  return textInput;
 }  // possibly consider switch cases instead of if statments later on
 
 
@@ -137,7 +148,7 @@ function keyPressed() {
     // use keycodes to determine if key is allowed
     if (keyCode === 8) {
       keyboardState = `delete`;
-      textSystem(newCreature.name.slice(0, newCreature.name.length - 1));
+      textSystem(textInput.slice(0, textLength - 1));
     }
   }
 }
