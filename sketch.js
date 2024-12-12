@@ -90,9 +90,8 @@ function draw() {
   dispFrameRate();
   time();
   text(keyboardState, windowWidth / 2, windowHeight / 1.1);
-
-  textSize(windowWidth / 30);
-    text(`creature name: ${textInput}_`, windowWidth / 2, windowHeight / 1.3);
+  textSystem();
+  textSystem.disp();
 }
 
 function dispFrameRate() {
@@ -118,41 +117,49 @@ function mouseClicked() {
   newCreature.egg();
 }
 
-function textSystem(input, min = 1, max = 12) {
-  let maxTextLength = max;
-  let minTextLength = min;
-  textLength = textInput.length;
+function textSystem(min = 1, max = 12) {
+  textSystem.inputText = inputText;
+  textSystem.disp = dispText;
 
   flag = true;
 
-  if (keyboardState === `type` && textLength <= maxTextLength) {
-    textInput += input;
-  }
-  if (keyboardState === `delete` && textLength >= minTextLength) {
-    textInput = input;
-  }
-  // if (keyboardState === `enter` && textLength >= minTextLength) {
+  function inputText(input) {
+    if (keyboardState === `type` && textLength <= max) {
+      textInput += input;
+    }
+    if (keyboardState === `delete` && textLength >= min) {
+      textInput = input;
+    }
+    // if (keyboardState === `enter` && textLength >= min) {
 
-  // }
+    // }
+  }
+
+  function dispText() {
+    textSize(windowWidth / 30);
+    text(`${textInput}_`, windowWidth / 2, windowHeight / 1.3);
+  }
 }  // possibly consider switch cases instead of if statments later on
-
 
 function keyPressed() {
   // use keycodes to determine if key is allowed
   if (flag) {
+    textLength = textInput.length;
     if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) {
       keyboardState = `type`;
       fill(`black`);
-      textSystem(key);
+      textSystem();
+      textSystem.inputText(key);
     }
 
     // use keycodes to determine if key is allowed
-    if (keyCode === 8) {
+    else if (keyCode === 8) {
       keyboardState = `delete`;
-      textSystem(textInput.slice(0, textLength - 1));
+      textSystem();
+      textSystem.inputText(textInput.slice(0, textInput.length - 1));
     }
 
-    if (keyCode === 13) {
+    else if (keyCode === 13) {
       keyboardState = `enter`;
       flag = false;
     }
