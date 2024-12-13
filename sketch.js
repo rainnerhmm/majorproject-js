@@ -13,7 +13,7 @@
 // https://editor.p5js.org/michellu0929/sketches/KL0ydodUa
 
 let newCreature = ``;
-let flag = false;
+let textFlag = false;
 let keyboardState = 'null';
 
 // Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
@@ -41,6 +41,7 @@ class Creature {
 
   update(x, y) {
     this.display();
+    this.egg();
   }
 
   display() {
@@ -54,8 +55,8 @@ class Creature {
     text(this.counter, this.x, this.y);
 
     // birth info
-    // textSize(windowWidth / 30);
-    // text(`creature name: ${this.name}_`, windowWidth / 2, windowHeight / 1.3);
+    textSize(windowWidth / 30);
+    text(`creature name: ${this.name}_`, windowWidth / 2, windowHeight / 1.3);
 
     // if (this.status === this.creature) {
     //   textSize(windowWidth / 25);
@@ -71,7 +72,8 @@ class Creature {
     if (this.counter >= 1) {
       this.status = this.creature;
       this.counter = ``;
-      this.name = textSystem();
+      // textSystem.flag();
+      // textSystem.return(this.name);
     }
   }
 };
@@ -118,10 +120,10 @@ function mouseClicked() {
 }
 
 function textSystem(min = 1, max = 12) {
-  textSystem.inputText = inputText;
+  textSystem.input = inputText;
   textSystem.disp = dispText;
-
-  flag = true;
+  textSystem.return = returnText;
+  textSystem.flag = flagText;
 
   function inputText(input) {
     if (keyboardState === `type` && textLength <= max) {
@@ -130,38 +132,46 @@ function textSystem(min = 1, max = 12) {
     if (keyboardState === `delete` && textLength >= min) {
       textInput = input;
     }
-    // if (keyboardState === `enter` && textLength >= min) {
-
-    // }
   }
 
   function dispText() {
     textSize(windowWidth / 30);
     text(`${textInput}_`, windowWidth / 2, windowHeight / 1.3);
   }
+
+  function flagText() {
+    textFlag = true;
+  }
+
+  function returnText(someText) {
+    if (keyboardState === `enter` && textLength >= min) {
+      someText = textInput;
+      return someText;
+    }
+  }
 }  // possibly consider switch cases instead of if statments later on
 
 function keyPressed() {
   // use keycodes to determine if key is allowed
-  if (flag) {
+  if (textFlag) {
     textLength = textInput.length;
     if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) {
       keyboardState = `type`;
       fill(`black`);
       textSystem();
-      textSystem.inputText(key);
+      textSystem.input(key);
     }
 
     // use keycodes to determine if key is allowed
     else if (keyCode === 8) {
       keyboardState = `delete`;
       textSystem();
-      textSystem.inputText(textInput.slice(0, textInput.length - 1));
+      textSystem.input(textInput.slice(0, textInput.length - 1));
     }
 
     else if (keyCode === 13) {
       keyboardState = `enter`;
-      flag = false;
+      textFlag = false;
     }
   }
 }
