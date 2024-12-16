@@ -11,6 +11,8 @@
 // https://editor.p5js.org/codingtrain/sketches/hZWcc0Vi-
 // https://editor.p5js.org/codingtrain/sketches/YzFpEGdsl
 // https://editor.p5js.org/michellu0929/sketches/KL0ydodUa
+// https://p5js.org/tutorials/creating-styling-html/
+//
 
 let newCreature = ``;
 let textFlag = false;
