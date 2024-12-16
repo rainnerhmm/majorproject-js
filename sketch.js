@@ -16,6 +16,7 @@
 
 let newCreature = ``;
 let textFlag = false;
+let returnFlag = false;
 let keyboardState = 'null';
 
 // Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
@@ -43,7 +44,9 @@ class Creature {
 
   update(x, y) {
     this.display();
-    this.egg();
+    if (returnFlag === true){
+      this.return();
+    }
   }
 
   display() {
@@ -74,9 +77,12 @@ class Creature {
     if (this.counter >= 1) {
       this.status = this.creature;
       this.counter = ``;
-      // textSystem.flag();
-      // textSystem.return(this.name);
+      textSystem.flag();
     }
+  }
+
+  return() {
+    this.name = textSystem.return();
   }
 };
 
@@ -147,7 +153,9 @@ function textSystem(min = 1, max = 12) {
 
   function returnText(someText) {
     if (keyboardState === `enter` && textLength >= min) {
+      returnFlag = true;
       someText = textInput;
+      console.log(someText);
       return someText;
     }
   }
