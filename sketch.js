@@ -15,6 +15,7 @@
 //
 
 let newCreature = ``;
+let someTextSystem;
 let textFlag = false;
 let returnFlag = false;
 let keyboardState = 'null';
@@ -77,18 +78,54 @@ class Creature {
     if (this.counter >= 1) {
       this.status = this.creature;
       this.counter = ``;
-      textSystem.flag();
+      someTextSystem.update();
     }
   }
 
   return() {
-    this.name = textSystem.return();
+    this.name = someTextSystem.return();
   }
 };
+
+class TextSystem {
+  constructor(min, max) {
+    this.min = min || 1;
+    this.max = max || 12;
+  }
+
+  input(input) {
+    if (keyboardState === `type` && textLength <= this.max) {
+      textInput += input;
+    }
+    if (keyboardState === `delete` && textLength >= this.min) {
+      textInput = input;
+    }
+  }
+
+  disp() {
+    textSize(windowWidth / 30);
+    text(`${textInput}_`, windowWidth / 2, windowHeight / 1.3);
+  }
+
+  update() {
+    textFlag = true;
+  }
+
+  return(someText) {
+    if (keyboardState === `enter` && textLength >= this.min) {
+      returnFlag = true;
+      someText = textInput;
+      console.log(someText);
+      return someText;
+    }
+  }
+}  // possibly consider switch cases instead of if statments later on
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   newCreature = new Creature(width / 2, height / 2, width / 50);
+  someTextSystem = new TextSystem;
 }
 
 function draw() {
@@ -100,8 +137,7 @@ function draw() {
   dispFrameRate();
   time();
   text(keyboardState, windowWidth / 2, windowHeight / 1.1);
-  textSystem();
-  textSystem.disp();
+  someTextSystem.disp();
 }
 
 function dispFrameRate() {
@@ -127,40 +163,6 @@ function mouseClicked() {
   newCreature.egg();
 }
 
-function textSystem(min = 1, max = 12) {
-  textSystem.input = inputText;
-  textSystem.disp = dispText;
-  textSystem.return = returnText;
-  textSystem.flag = flagText;
-
-  function inputText(input) {
-    if (keyboardState === `type` && textLength <= max) {
-      textInput += input;
-    }
-    if (keyboardState === `delete` && textLength >= min) {
-      textInput = input;
-    }
-  }
-
-  function dispText() {
-    textSize(windowWidth / 30);
-    text(`${textInput}_`, windowWidth / 2, windowHeight / 1.3);
-  }
-
-  function flagText() {
-    textFlag = true;
-  }
-
-  function returnText(someText) {
-    if (keyboardState === `enter` && textLength >= min) {
-      returnFlag = true;
-      someText = textInput;
-      console.log(someText);
-      return someText;
-    }
-  }
-}  // possibly consider switch cases instead of if statments later on
-
 function keyPressed() {
   // use keycodes to determine if key is allowed
   if (textFlag) {
@@ -168,15 +170,14 @@ function keyPressed() {
     if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) {
       keyboardState = `type`;
       fill(`black`);
-      textSystem();
-      textSystem.input(key);
+      someTextSystem.input(key);
     }
 
     // use keycodes to determine if key is allowed
     else if (keyCode === 8) {
       keyboardState = `delete`;
-      textSystem();
-      textSystem.input(textInput.slice(0, textInput.length - 1));
+      someTextSystem();
+      someTextSystem.input(textInput.slice(0, textInput.length - 1));
     }
 
     else if (keyCode === 13) {
