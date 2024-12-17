@@ -121,6 +121,21 @@ class TextSystem {
   }
 }  // possibly consider switch cases instead of if statments later on
 
+class Menus {
+  constructor(state) {
+    this.state = state;
+    this.xTrack = mouseX;
+    this.yTrack = mouseY;
+  }
+
+  input() {
+
+  }
+
+  disp() {
+    
+  }
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
