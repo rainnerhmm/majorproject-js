@@ -3,7 +3,7 @@
 // Nov 18th, 2024
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// - describe what you did to take this project `above and beyond`
 
 // links 
 // https://p5js.org/examples/
@@ -18,15 +18,12 @@ let newCreature = ``;
 let someTextSystem;
 let textFlag = false;
 let returnFlag = false;
-let keyboardState = 'null';
+let keyboardState = `null`;
 
 // Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
 // Health, hunger, and whatever other meters
 
 // the class will be split into sub classes that represent its lifestate, egg, young, adult, old
-
-let textInput = ``;
-let textLength;
 
 class Creature {
   constructor(x, y, r) {
@@ -45,9 +42,6 @@ class Creature {
 
   update(x, y) {
     this.display();
-    if (returnFlag === true){
-      this.return();
-    }
   }
 
   display() {
@@ -60,14 +54,10 @@ class Creature {
     textSize(windowWidth / 10);
     text(this.counter, this.x, this.y);
 
-    // birth info
-    textSize(windowWidth / 30);
-    text(`creature name: ${this.name}_`, windowWidth / 2, windowHeight / 1.3);
-
-    // if (this.status === this.creature) {
-    //   textSize(windowWidth / 25);
-    //   text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
-    // }
+    if (this.status === this.creature) {
+      textSize(windowWidth / 25);
+      text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
+    }
   }
 
   egg() {
@@ -81,47 +71,48 @@ class Creature {
       someTextSystem.update();
     }
   }
-
-  return() {
-    this.name = someTextSystem.return();
-  }
 };
 
 class TextSystem {
   constructor(min, max) {
     this.min = min || 1;
     this.max = max || 12;
+    this.textInput = ``;
+    this.textLength;
+    this.finalString = ``;
   }
 
   input(input) {
-    if (keyboardState === `type` && textLength <= this.max) {
-      textInput += input;
+    if (keyboardState === `type` && this.textLength <= this.max) {
+      this.textInput += input;
     }
-    if (keyboardState === `delete` && textLength >= this.min) {
-      textInput = input;
+    if (keyboardState === `delete` && this.textLength >= this.min) {
+      this.textInput = input;
     }
   }
 
   disp() {
     textSize(windowWidth / 30);
-    text(`${textInput}_`, windowWidth / 2, windowHeight / 1.3);
+    text(`${this.textInput}_`, windowWidth / 2, windowHeight / 1.2);
   }
 
   update() {
     textFlag = true;
   }
 
-  return(someText) {
-    if (keyboardState === `enter` && textLength >= this.min) {
+  enter() {
+    if (keyboardState === `enter` && this.textLength >= this.min) {
+      textFlag = false;
       returnFlag = true;
-      someText = textInput;
-      console.log(someText);
-      return someText;
+      this.finalString = this.textInput;
+      console.log(this.finalString);
+      newCreature.name = this.finalString;
     }
   }
 }  // possibly consider switch cases instead of if statments later on
 
 class Menus {
+  // must track mouse movements, and register 
   constructor(state) {
     this.state = state;
     this.xTrack = mouseX;
@@ -181,7 +172,7 @@ function mouseClicked() {
 function keyPressed() {
   // use keycodes to determine if key is allowed
   if (textFlag) {
-    textLength = textInput.length;
+    someTextSystem.textLength = someTextSystem.textInput.length;
     if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) {
       keyboardState = `type`;
       fill(`black`);
@@ -191,13 +182,12 @@ function keyPressed() {
     // use keycodes to determine if key is allowed
     else if (keyCode === 8) {
       keyboardState = `delete`;
-      someTextSystem();
-      someTextSystem.input(textInput.slice(0, textInput.length - 1));
+      someTextSystem.input(someTextSystem.textInput.slice(0, someTextSystem.textInput.length - 1));
     }
 
     else if (keyCode === 13) {
       keyboardState = `enter`;
-      textFlag = false;
+      someTextSystem.enter();
     }
   }
 }
