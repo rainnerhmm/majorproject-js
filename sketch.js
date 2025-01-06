@@ -38,6 +38,7 @@ class Creature {
     this.creature = `🐔`;
     this.status = this.creatureegg;
     this.name = ``;
+    this.time = 0;
   }
 
   update(x, y) {
@@ -65,7 +66,7 @@ class Creature {
       this.counter++;
     }
 
-    if (this.counter >= 1) {
+    if (this.counter >= 5) {
       this.status = this.creature;
       this.counter = ``;
       someTextSystem.update();
@@ -157,8 +158,15 @@ function time() {
   let hourOf = hour();
   let minuteOf = minute();
   let secondOf = second();
+
+  let yearOf = year();
+  let monthOf = month();
+  let dayOf = day();
+
   textSize(windowWidth / 25);
   text(`Time: ${hourOf}:${minuteOf}:${secondOf} p.m.`, windowWidth / 2, windowHeight / 5);
+  textSize(windowWidth / 45);
+  text(`Date: ${yearOf}-${monthOf}-${dayOf}`, windowWidth / 2, windowHeight / 3.7);
 }
 
 function windowResized() {
