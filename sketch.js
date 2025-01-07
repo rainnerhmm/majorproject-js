@@ -15,7 +15,7 @@
 //
 
 let newCreature = ``;
-let someTextSystem;
+let theTextSystem;
 let textFlag = false;
 let returnFlag = false;
 let keyboardState = `null`;
@@ -69,7 +69,7 @@ class Creature {
     if (this.counter >= 5) {
       this.status = this.creature;
       this.counter = ``;
-      someTextSystem.update();
+      theTextSystem.update();
     }
   }
 };
@@ -132,7 +132,7 @@ class Menus {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   newCreature = new Creature(width / 2, height / 2, width / 50);
-  someTextSystem = new TextSystem;
+  theTextSystem = new TextSystem;
 }
 
 function draw() {
@@ -144,7 +144,7 @@ function draw() {
   dispFrameRate();
   time();
   text(keyboardState, windowWidth / 2, windowHeight / 1.1);
-  someTextSystem.disp();
+  theTextSystem.disp();
 }
 
 function dispFrameRate() {
@@ -180,22 +180,22 @@ function mouseClicked() {
 function keyPressed() {
   // use keycodes to determine if key is allowed
   if (textFlag) {
-    someTextSystem.textLength = someTextSystem.textInput.length;
+    theTextSystem.textLength = theTextSystem.textInput.length;
     if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) {
       keyboardState = `type`;
       fill(`black`);
-      someTextSystem.input(key);
+      theTextSystem.input(key);
     }
 
     // use keycodes to determine if key is allowed
     else if (keyCode === 8) {
       keyboardState = `delete`;
-      someTextSystem.input(someTextSystem.textInput.slice(0, someTextSystem.textInput.length - 1));
+      theTextSystem.input(theTextSystem.textInput.slice(0, theTextSystem.textInput.length - 1));
     }
 
     else if (keyCode === 13) {
       keyboardState = `enter`;
-      someTextSystem.enter();
+      theTextSystem.enter();
     }
   }
 }
