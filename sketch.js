@@ -14,8 +14,9 @@
 // https://p5js.org/tutorials/creating-styling-html/
 //
 
-let newCreature = ``;
+let newCreature;
 let theTextSystem;
+let theMenus;
 let textFlag = false;
 let returnFlag = false;
 let keyboardState = `null`;
@@ -49,7 +50,6 @@ class Creature {
     noStroke();
 
     // creatureegg
-    textAlign(CENTER, CENTER);
     textSize(windowWidth / 5);
     text(this.status, this.x, this.y);
     textSize(windowWidth / 10);
@@ -118,14 +118,38 @@ class Menus {
     this.state = state;
     this.xTrack = mouseX;
     this.yTrack = mouseY;
+    this.head = ``;
+    this.subhead = ``;
+  }
+
+  update() {
+    this.disp();
+    this.paused();
+    this.title();
   }
 
   input() {
-
+    this.state = `play`;
   }
 
   disp() {
-    
+    textSize(windowWidth / 45);
+    text(this.head, width / 2, height / 2);
+    text(this.subhead, width / 2, height / 1.7);
+  }
+
+  title() {
+    if (this.state === `title`) {
+      this.head = `majorproject`;
+      this.subhead = `click to start`;
+    }
+  }
+
+  paused() {
+    if (this.state === `paused`) {
+      this.head = `paused`;
+      this.subhead = 'paused';
+    }
   }
 }
 
@@ -133,18 +157,27 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   newCreature = new Creature(width / 2, height / 2, width / 50);
   theTextSystem = new TextSystem;
+  theMenus = new Menus;
+  textAlign(CENTER, CENTER);
+  theMenus.state = `title`;
 }
 
 function draw() {
   background(220);
-  newCreature.update();
+  if (theMenus.state === `title`) {
+    theMenus.update();
+  }
+
+  else if (theMenus.state === `play`) {
+    newCreature.update();
 
 
-  // displays notable info (debug only)
-  dispFrameRate();
-  time();
-  text(keyboardState, windowWidth / 2, windowHeight / 1.1);
-  theTextSystem.disp();
+    // displays notable info (debug only)
+    dispFrameRate();
+    time();
+    text(keyboardState, windowWidth / 2, windowHeight / 1.1);
+    theTextSystem.disp();
+  }
 }
 
 function dispFrameRate() {
@@ -174,11 +207,22 @@ function windowResized() {
 }
 
 function mouseClicked() {
+  theMenus.input();
   newCreature.egg();
 }
 
 function keyPressed() {
   // use keycodes to determine if key is allowed
+  if (keyCode === 27) {
+    if (theMenus.state === `paused`) {
+      theMenus.state = `play`;
+    }
+    else {
+      theMenus.update();
+      theMenus.state = `paused`;
+    }
+  }
+  
   if (textFlag) {
     theTextSystem.textLength = theTextSystem.textInput.length;
     if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) {
@@ -187,7 +231,6 @@ function keyPressed() {
       theTextSystem.input(key);
     }
 
-    // use keycodes to determine if key is allowed
     else if (keyCode === 8) {
       keyboardState = `delete`;
       theTextSystem.input(theTextSystem.textInput.slice(0, theTextSystem.textInput.length - 1));
