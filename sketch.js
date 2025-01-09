@@ -146,10 +146,9 @@ class Menus {
   }
 
   paused() {
-    if (this.state === `paused`) {
-      this.head = `paused`;
-      this.subhead = 'paused';
-    }
+    console.log(`paused`);
+    this.head = `paused`;
+    this.subhead = `paused`;
   }
 }
 
@@ -168,15 +167,16 @@ function draw() {
     theMenus.update();
   }
 
-  else if (theMenus.state === `play`) {
+  if (theMenus.state === `play`) {
     newCreature.update();
-
-
-    // displays notable info (debug only)
-    dispFrameRate();
-    time();
-    text(keyboardState, windowWidth / 2, windowHeight / 1.1);
     theTextSystem.disp();
+    // displays notable info (debug only)
+    if (theMenus.state === `paused`) {
+      theMenus.update();
+      dispFrameRate();
+      text(keyboardState, windowWidth / 2, windowHeight / 1.1);
+
+    }
   }
 }
 
@@ -207,22 +207,24 @@ function windowResized() {
 }
 
 function mouseClicked() {
-  theMenus.input();
+  if (theMenus.state !== `play` || theMenus.state !== `paused`) {
+    theMenus.input();
+  } 
   newCreature.egg();
 }
 
 function keyPressed() {
   // use keycodes to determine if key is allowed
   if (keyCode === 27) {
+    theMenus.update();
     if (theMenus.state === `paused`) {
       theMenus.state = `play`;
     }
-    else {
-      theMenus.update();
+    if (theMenus.state === `play`) {
       theMenus.state = `paused`;
     }
   }
-  
+
   if (textFlag) {
     theTextSystem.textLength = theTextSystem.textInput.length;
     if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) {
