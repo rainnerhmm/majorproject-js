@@ -17,9 +17,11 @@
 let newCreature;
 let theTextSystem;
 let theMenus;
+
 let textFlag = false;
-let returnFlag = false;
 let keyboardState = `null`;
+
+const MAX_HUNGER = 100;
 
 // Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
 // Health, hunger, and whatever other meters
@@ -30,39 +32,49 @@ class Creature {
   constructor(x, y, r) {
     this.x = x;
     this.y = y;
-    this.radius = r;
-    this.color = color(random(255), random(255), random(255));
     this.health = 100;
     this.hunger = 100;
     this.counter = 0;
-    this.creatureegg = `🥚`;
+    this.egg = `🥚`;
     this.creature = `🐔`;
-    this.status = this.creatureegg;
+    this.status = this.egg;
     this.name = ``;
-    this.time = 0;
+    this.hunger = MAX_HUNGER;
   }
 
   update(x, y) {
     this.display();
+    this.food();
   }
 
   display() {
-    noStroke();
-
-    // creatureegg
+    // creature life cycle
     textSize(windowWidth / 5);
     text(this.status, this.x, this.y);
+
+    // creature click counter
     textSize(windowWidth / 10);
     text(this.counter, this.x, this.y);
 
     if (this.status === this.creature) {
       textSize(windowWidth / 25);
       text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
+
+      // hunger meter
+      push();
+      noFill();
+      rect(50, 75, width / 4, 20);
+      pop();
+
+      push();
+      fill('yellow');
+      rect(50, 75, width / 4 * (this.hunger / 100), 20);
+      pop();
     }
   }
 
-  egg() {
-    if (this.status === this.creatureegg) {
+  life() {
+    if (this.status === this.egg) {
       this.counter++;
     }
 
@@ -70,6 +82,16 @@ class Creature {
       this.status = this.creature;
       this.counter = ``;
       theTextSystem.update();
+    }
+  }
+
+  food() {
+    if (this.status === this.creature) {
+      if (this.hunger >= 0) {
+        setInterval((this.hun));
+        console.log(millis() % 5);
+        this.hunger -= 10;
+      }
     }
   }
 };
@@ -104,7 +126,6 @@ class TextSystem {
   enter() {
     if (keyboardState === `enter` && this.textLength >= this.min) {
       textFlag = false;
-      returnFlag = true;
       this.finalString = this.textInput;
       console.log(this.finalString);
       newCreature.name = this.finalString;
@@ -154,10 +175,14 @@ class Menus {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  noStroke();
+  textAlign(CENTER, CENTER);
+
+  // creating classes
   newCreature = new Creature(width / 2, height / 2, width / 50);
   theTextSystem = new TextSystem;
   theMenus = new Menus;
-  textAlign(CENTER, CENTER);
+
   theMenus.state = `title`;
 }
 
@@ -209,8 +234,8 @@ function windowResized() {
 function mouseClicked() {
   if (theMenus.state !== `play` || theMenus.state !== `paused`) {
     theMenus.input();
-  } 
-  newCreature.egg();
+  }
+  newCreature.life();
 }
 
 function keyPressed() {
