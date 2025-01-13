@@ -21,7 +21,11 @@ let theMenus;
 let textFlag = false;
 let keyboardState = `null`;
 
+let lastSwitchedTime = 0;
+
 const MAX_HUNGER = 100;
+
+const SECOND_DURATION = 1000; // Multiply by an desired amount of seconds to get it
 
 // Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
 // Health, hunger, and whatever other meters
@@ -62,14 +66,20 @@ class Creature {
 
       // hunger meter
       push();
-      noFill();
-      rect(50, 75, width / 4, 20);
+      fill('black');
+      rect(50, 50, 50, height / 4 * (MAX_HUNGER / 100));
       pop();
 
       push();
       fill('yellow');
-      rect(50, 75, width / 4 * (this.hunger / 100), 20);
+      rect(50, 50, 50, height / 4 * (this.hunger / 100));
       pop();
+
+      push();
+      textSize(10);
+      text(this.hunger, 75, 85);
+      pop();
+
     }
   }
 
@@ -87,11 +97,17 @@ class Creature {
 
   food() {
     if (this.status === this.creature) {
-      if (this.hunger >= 0) {
-        setInterval((this.hun));
-        console.log(millis() % 5);
-        this.hunger -= 10;
+      if (millis() > lastSwitchedTime + SECOND_DURATION * 5 && this.hunger >= 0) {
+        if (this.hunger <= 0) {
+          this.hunger = 0;
+        }
+        lastSwitchedTime = millis();
+        console.log(lastSwitchedTime);
+        this.hunger -= 1;
       }
+    }
+    else {
+      lastSwitchedTime = millis();
     }
   }
 };

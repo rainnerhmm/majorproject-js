@@ -11,7 +11,7 @@ Putting together everything I've learned, I'm going to make a 'Digital Pet' Game
 - [x] creature name
 - [ ] creature birthday based on system clock
 - [ ] food to feed the creature
-- [ ] hunger meter
+- [x] hunger meter
 - [ ] death support
 - [ ] variety of music
 - [ ] sound effects
