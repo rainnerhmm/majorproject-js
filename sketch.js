@@ -24,6 +24,7 @@ let keyboardState = `null`;
 let lastSwitchedTime = 0;
 
 const MAX_HUNGER = 100;
+const MAX_HEALTH = 100;
 
 const SECOND_DURATION = 1000; // Multiply by an desired amount of seconds to get it
 
@@ -36,13 +37,13 @@ class Creature {
   constructor(x, y, r) {
     this.x = x;
     this.y = y;
-    this.health = 100;
-    this.hunger = 100;
     this.counter = 0;
     this.egg = `🥚`;
     this.creature = `🐔`;
+    this.death = `🪦`;
     this.status = this.egg;
     this.name = ``;
+    this.health = MAX_HEALTH;
     this.hunger = MAX_HUNGER;
   }
 
@@ -71,13 +72,29 @@ class Creature {
       pop();
 
       push();
-      fill('yellow');
+      fill('orange');
       rect(50, 50, 50, height / 4 * (this.hunger / 100));
       pop();
 
       push();
       textSize(10);
       text(this.hunger, 75, 85);
+      pop();
+
+      // health meter
+      push();
+      fill('black');
+      rect(125, 50, 50, height / 4 * (MAX_HEALTH / 100));
+      pop();
+
+      push();
+      fill('pink');
+      rect(125, 50, 50, height / 4 * (this.health / 100));
+      pop();
+
+      push();
+      textSize(10);
+      text(this.health, 150, 85);
       pop();
 
     }
@@ -89,9 +106,23 @@ class Creature {
     }
 
     if (this.counter >= 5) {
+      lastSwitchedTime = millis();
       this.status = this.creature;
       this.counter = ``;
       theTextSystem.update();
+    }
+
+    if (this.health <= 0) {
+      this.status = this.death;
+    }
+
+    if (this.status === this.creature) {
+      if (this.health >= 0) {
+        if (this.health <= 0) {
+          this.health = 0;
+        }
+        this.health -= 5;
+      }
     }
   }
 
@@ -189,6 +220,13 @@ class Menus {
   }
 }
 
+let sound;
+
+function preload() {
+  sound = loadSound(`taco-bell-bong-sfx.mp3`);
+  sound.amp(1.0);
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
@@ -204,6 +242,10 @@ function setup() {
 
 function draw() {
   background(220);
+  if (newCreature.status === newCreature.death) {
+    console.log('sound');
+    sound.play();
+  }
   if (theMenus.state === `title`) {
     theMenus.update();
   }
