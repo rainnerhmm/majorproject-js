@@ -102,6 +102,8 @@ class Creature {
 
   life() {
     if (this.status === this.egg) {
+      console.log('eggSound');
+      eggSound.play();
       this.counter++;
     }
 
@@ -117,12 +119,19 @@ class Creature {
     }
 
     if (this.status === this.creature) {
+      console.log('lifeSound');
+      lifeSound.play();
       if (this.health >= 0) {
         if (this.health <= 0) {
           this.health = 0;
         }
         this.health -= 5;
       }
+    }
+
+    if (this.status === this.death) {
+      console.log('deathSound');
+      deathSound.play();
     }
   }
 
@@ -220,11 +229,17 @@ class Menus {
   }
 }
 
-let sound;
+let eggSound;
+let lifeSound;
+let deathSound;
 
 function preload() {
-  sound = loadSound(`taco-bell-bong-sfx.mp3`);
-  sound.amp(1.0);
+  eggSound = loadSound(`vine-boom.mp3`);
+  eggSound.amp(1.0);
+  lifeSound = loadSound(`prowler-sound-effect_6bXErot.mp3`);
+  lifeSound.amp(1.0);
+  deathSound = loadSound(`taco-bell-bong-sfx.mp3`);
+  deathSound.amp(1.0);
 }
 
 function setup() {
@@ -242,10 +257,6 @@ function setup() {
 
 function draw() {
   background(220);
-  if (newCreature.status === newCreature.death) {
-    console.log('sound');
-    sound.play();
-  }
   if (theMenus.state === `title`) {
     theMenus.update();
   }
