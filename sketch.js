@@ -14,17 +14,33 @@
 // https://p5js.org/tutorials/creating-styling-html/
 //
 
-let newCreature;
-let theTextSystem;
-let theMenus;
+let newCreature, theTextSystem, theMenus;
+
+const CREATURE_EGG = `🥚`;
+const CREATURE_GRAVE = `🪦`;
+
+let creatureTypes = [
+  ["rock", '🪨'],
+  ["chicken", `🐓`],
+  ["lobster", `🦞`],
+  ["dog", `🐕`],
+  ["cat", '🐈'],
+  ["horse", '🐎'],
+  ["penguin", '🐧'],
+  ["dinosaur", '🦕'],
+  ["sheep", '🐑'],
+  ["human", '🧍'],
+];
 
 let textFlag = false;
 let keyboardState = `null`;
 
 let lastSwitchedTime = 0;
 
-const MAX_HUNGER = 100;
-const MAX_HEALTH = 100;
+let randomNum = random(0,9);
+
+const MAX_HUNGER = 100; // Max amount of the Hunger meter
+const MAX_HEALTH = 100; // Max amount of the Health meter
 
 const SECOND_DURATION = 1000; // Multiply by an desired amount of seconds to get it
 
@@ -34,13 +50,14 @@ const SECOND_DURATION = 1000; // Multiply by an desired amount of seconds to get
 // the class will be split into sub classes that represent its lifestate, egg, young, adult, old
 
 class Creature {
-  constructor(x, y, r) {
+  constructor(x, y, random) {
     this.x = x;
     this.y = y;
+    this.random = random;
     this.counter = 0;
-    this.egg = `🥚`;
-    this.creature = `🐔`;
-    this.death = `🪦`;
+    this.egg = CREATURE_EGG;
+    this.creature;
+    this.death = CREATURE_GRAVE;
     this.status = this.egg;
     this.name = ``;
     this.health = MAX_HEALTH;
@@ -69,67 +86,59 @@ class Creature {
       push();
       fill('black');
       rect(50, 50, 50, height / 4 * (MAX_HUNGER / 100));
-      pop();
 
-      push();
       fill('orange');
       rect(50, 50, 50, height / 4 * (this.hunger / 100));
-      pop();
 
-      push();
       textSize(10);
       text(this.hunger, 75, 85);
-      pop();
 
       // health meter
-      push();
       fill('black');
       rect(125, 50, 50, height / 4 * (MAX_HEALTH / 100));
-      pop();
 
-      push();
       fill('pink');
       rect(125, 50, 50, height / 4 * (this.health / 100));
-      pop();
 
-      push();
       textSize(10);
       text(this.health, 150, 85);
       pop();
-
     }
   }
 
   life() {
-    if (this.status === this.egg) {
-      console.log('eggSound');
-      eggSound.play();
+    if (this.status === this.egg || this.status === this.creature) { // sfx for hitting egg or creature
+      console.log('hitSound');
+      hitSound.play();
+    }
+
+    if (this.status === this.egg) { // code for the egg state of your creatures life
       this.counter++;
-    }
+      if (this.counter >= 5) {
+        console.log('lifeSound');
 
-    if (this.counter >= 5) {
-      lastSwitchedTime = millis();
-      this.status = this.creature;
-      this.counter = ``;
-      theTextSystem.update();
-    }
+        lifeSound.play();
 
-    if (this.health <= 0) {
-      this.status = this.death;
+        lastSwitchedTime = millis();
+
+        this.status = this.creature;
+        theTextSystem.update();
+      }  
     }
 
     if (this.status === this.creature) {
-      console.log('lifeSound');
-      lifeSound.play();
+      console.log(this.random);
+      this.creature = creatureTypes[this.random][1];
       if (this.health >= 0) {
+        this.health -= 5;
         if (this.health <= 0) {
           this.health = 0;
+          this.status = this.death;
         }
-        this.health -= 5;
       }
     }
 
-    if (this.status === this.death) {
+    if (this.status === this.death) { // code for the death state of your creatures life (plays sfx)
       console.log('deathSound');
       deathSound.play();
     }
@@ -229,13 +238,11 @@ class Menus {
   }
 }
 
-let eggSound;
-let lifeSound;
-let deathSound;
+let hitSound, lifeSound, deathSound;
 
 function preload() {
-  eggSound = loadSound(`vine-boom.mp3`);
-  eggSound.amp(1.0);
+  hitSound = loadSound(`vine-boom.mp3`);
+  hitSound.amp(1.0);
   lifeSound = loadSound(`prowler-sound-effect_6bXErot.mp3`);
   lifeSound.amp(1.0);
   deathSound = loadSound(`taco-bell-bong-sfx.mp3`);
@@ -248,7 +255,7 @@ function setup() {
   textAlign(CENTER, CENTER);
 
   // creating classes
-  newCreature = new Creature(width / 2, height / 2, width / 50);
+  newCreature = new Creature(width / 2, height / 2, width / 50, randomNum);
   theTextSystem = new TextSystem;
   theMenus = new Menus;
 
