@@ -19,25 +19,10 @@ let newCreature, theTextSystem, theMenus;
 const CREATURE_EGG = `🥚`;
 const CREATURE_GRAVE = `🪦`;
 
-let creatureTypes = [
-  ["rock", '🪨'],
-  ["chicken", `🐓`],
-  ["lobster", `🦞`],
-  ["dog", `🐕`],
-  ["cat", '🐈'],
-  ["horse", '🐎'],
-  ["penguin", '🐧'],
-  ["dinosaur", '🦕'],
-  ["sheep", '🐑'],
-  ["human", '🧍'],
-];
-
 let textFlag = false;
 let keyboardState = `null`;
 
 let lastSwitchedTime = 0;
-
-let randomNum = random(0,9);
 
 const MAX_HUNGER = 100; // Max amount of the Hunger meter
 const MAX_HEALTH = 100; // Max amount of the Health meter
@@ -50,13 +35,13 @@ const SECOND_DURATION = 1000; // Multiply by an desired amount of seconds to get
 // the class will be split into sub classes that represent its lifestate, egg, young, adult, old
 
 class Creature {
-  constructor(x, y, random) {
+  constructor(x, y, creature, sound) {
     this.x = x;
     this.y = y;
-    this.random = random;
     this.counter = 0;
     this.egg = CREATURE_EGG;
-    this.creature;
+    this.creature = creature;
+    this.sound = sound;
     this.death = CREATURE_GRAVE;
     this.status = this.egg;
     this.name = ``;
@@ -107,40 +92,33 @@ class Creature {
   }
 
   life() {
-    if (this.status === this.egg || this.status === this.creature) { // sfx for hitting egg or creature
-      console.log('hitSound');
-      hitSound.play();
+    if (this.status === CREATURE_EGG || this.status === this.creature) {
+      soundEffects();
     }
-
-    if (this.status === this.egg) { // code for the egg state of your creatures life
+    if (this.status === CREATURE_EGG) { // code for the egg state of your creatures life
       this.counter++;
       if (this.counter >= 5) {
         console.log('lifeSound');
 
-        lifeSound.play();
+        humanSound.play();
 
         lastSwitchedTime = millis();
 
         this.status = this.creature;
         theTextSystem.update();
-      }  
+      }
     }
 
     if (this.status === this.creature) {
-      console.log(this.random);
-      this.creature = creatureTypes[this.random][1];
-      if (this.health >= 0) {
+      console.log(this.creature);
+      if (this.health >= 5) {
         this.health -= 5;
         if (this.health <= 0) {
           this.health = 0;
           this.status = this.death;
+          soundEffects();
         }
       }
-    }
-
-    if (this.status === this.death) { // code for the death state of your creatures life (plays sfx)
-      console.log('deathSound');
-      deathSound.play();
     }
   }
 
@@ -238,15 +216,29 @@ class Menus {
   }
 }
 
-let hitSound, lifeSound, deathSound;
+let hitSound, rockSound, chickenSound, lobsterSound, dogSound, catSound, horseSound, penguinSound, dinoSound, humanSound, sheepSound, deathSound;
 
+let creatureTypes = [
+  ["rock", '🪨'],
+  ["chicken", `🐓`],
+  ["lobster", `🦞`],
+  ["dog", `🐕`,],
+  ["cat", '🐈',],
+  ["horse", '🐎'],
+  ["penguin", '🐧'],
+  ["dinosaur", '🦕'],
+  ["sheep", '🐑'],
+  ["human", '🧍'],
+];
 function preload() {
-  hitSound = loadSound(`vine-boom.mp3`);
-  hitSound.amp(1.0);
-  lifeSound = loadSound(`prowler-sound-effect_6bXErot.mp3`);
-  lifeSound.amp(1.0);
-  deathSound = loadSound(`taco-bell-bong-sfx.mp3`);
-  deathSound.amp(1.0);
+  hitSound = loadSound(`assets/sounds/hitSound.mp3`);
+  hitSound.amp(0.5);
+  humanSound = loadSound(`assets/sounds/humanSound.mp3`);
+  humanSound.amp(1.5);
+  dinoSound = loadSound(`assets/sounds/dinoSound.mp3`);
+  dinoSound.amp(1.5);
+  deathSound = loadSound(`assets/sounds/deathSound.mp3`);
+  deathSound.amp(0.3);
 }
 
 function setup() {
@@ -255,7 +247,8 @@ function setup() {
   textAlign(CENTER, CENTER);
 
   // creating classes
-  newCreature = new Creature(width / 2, height / 2, width / 50, randomNum);
+  let randomNumber = round(random(0, 9));
+  newCreature = new Creature(width / 2, height / 2, creatureTypes[randomNumber][1]);
   theTextSystem = new TextSystem;
   theMenus = new Menus;
 
@@ -278,6 +271,17 @@ function draw() {
       text(keyboardState, windowWidth / 2, windowHeight / 1.1);
 
     }
+  }
+}
+
+function soundEffects() {
+  if (newCreature.status === CREATURE_EGG || newCreature.status === newCreature.creature) {
+    console.log('hitSound');
+    hitSound.play();
+  }
+  if (newCreature.status === CREATURE_GRAVE) {
+    console.log('deathSound');
+    deathSound.play();
   }
 }
 
