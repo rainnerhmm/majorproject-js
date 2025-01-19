@@ -14,21 +14,6 @@
 // https://p5js.org/tutorials/creating-styling-html/
 //
 
-let newCreature, theTextSystem, theMenus;
-
-const CREATURE_EGG = `🥚`;
-const CREATURE_GRAVE = `🪦`;
-
-let textFlag = false;
-let keyboardState = `null`;
-
-let lastSwitchedTime = 0;
-
-const MAX_HUNGER = 100; // Max amount of the Hunger meter
-const MAX_HEALTH = 100; // Max amount of the Health meter
-
-const SECOND_DURATION = 1000; // Multiply by an desired amount of seconds to get it
-
 // Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
 // Health, hunger, and whatever other meters
 
@@ -55,39 +40,43 @@ class Creature {
   }
 
   display() {
+    fill('black');
     // creature life cycle
     textSize(windowWidth / 5);
     text(this.status, this.x, this.y);
 
     // creature click counter
-    textSize(windowWidth / 10);
-    text(this.counter, this.x, this.y);
+    if (this.status === CREATURE_EGG) {
+      textSize(windowWidth / 10);
+      text(this.counter, this.x, this.y);
+    }
 
     if (this.status === this.creature) {
       textSize(windowWidth / 25);
       text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
 
-      // hunger meter
-      push();
-      fill('black');
-      rect(50, 50, 50, height / 4 * (MAX_HUNGER / 100));
-
-      fill('orange');
-      rect(50, 50, 50, height / 4 * (this.hunger / 100));
-
-      textSize(10);
-      text(this.hunger, 75, 85);
-
       // health meter
+      fill('grey');
+      arc(width, height, height * 0.7, height * 0.7, PI, PI + HALF_PI);
+      fill('#ff0054ff');
+      arc(width, height, height * 0.7, height * 0.7, PI, PI + HALF_PI * this.health / MAX_HEALTH);
+
       fill('black');
-      rect(125, 50, 50, height / 4 * (MAX_HEALTH / 100));
+      arc(width, height, height * 0.5, height * 0.5, PI, PI + HALF_PI);
+      image(healthSymbol, width * 0.919, height * 0.84, healthSymbol.width / 6, healthSymbol.height / 6);
 
-      fill('pink');
-      rect(125, 50, 50, height / 4 * (this.health / 100));
+      push();
+      // hunger meter
+      scale(-1, 1); // scale -1, 1 reverses the x axis, keep y the same.
+      fill('grey');
+      arc(0, height, height * 0.7, height * 0.7, PI, PI + HALF_PI);
+      fill('#ffb800ff');
+      arc(0, height, height * 0.7, height * 0.7, PI, PI + HALF_PI * this.hunger / MAX_HUNGER);
 
-      textSize(10);
-      text(this.health, 150, 85);
+      fill('black');
+      arc(0, height, height * 0.5, height * 0.5, PI, PI + HALF_PI);
       pop();
+      image(hungerSymbol, width * 0.01, height * 0.82, hungerSymbol.width / 6, hungerSymbol.height / 6);
     }
   }
 
@@ -100,7 +89,7 @@ class Creature {
       if (this.counter >= 5) {
         console.log('lifeSound');
 
-        humanSound.play();
+        dinoSound.play();
 
         lastSwitchedTime = millis();
 
@@ -111,8 +100,9 @@ class Creature {
 
     if (this.status === this.creature) {
       console.log(this.creature);
-      if (this.health >= 5) {
+      if (this.health >= 0) {
         this.health -= 5;
+        console.log(this.health);
         if (this.health <= 0) {
           this.health = 0;
           this.status = this.death;
@@ -131,6 +121,7 @@ class Creature {
         lastSwitchedTime = millis();
         console.log(lastSwitchedTime);
         this.hunger -= 1;
+        console.log(this.hunger);
       }
     }
     else {
@@ -216,7 +207,23 @@ class Menus {
   }
 }
 
+let newCreature, theTextSystem, theMenus;
+
+const CREATURE_EGG = `🥚`;
+const CREATURE_GRAVE = `🪦`;
+
+let textFlag = false;
+let keyboardState = `null`;
+
+let lastSwitchedTime = 0;
+
+const MAX_HUNGER = 100; // Max amount of the Hunger meter
+const MAX_HEALTH = 100; // Max amount of the Health meter
+
+const SECOND_DURATION = 1000; // Multiply by an desired amount of seconds to get it
+
 let hitSound, rockSound, chickenSound, lobsterSound, dogSound, catSound, horseSound, penguinSound, dinoSound, humanSound, sheepSound, deathSound;
+let healthSymbol, hungerSymbol;
 
 let creatureTypes = [
   ["rock", '🪨'],
@@ -230,6 +237,7 @@ let creatureTypes = [
   ["sheep", '🐑'],
   ["human", '🧍'],
 ];
+
 function preload() {
   hitSound = loadSound(`assets/sounds/hitSound.mp3`);
   hitSound.amp(0.5);
@@ -239,13 +247,15 @@ function preload() {
   dinoSound.amp(1.5);
   deathSound = loadSound(`assets/sounds/deathSound.mp3`);
   deathSound.amp(0.3);
+
+  healthSymbol = loadImage(`healthSymbol.png`);
+  hungerSymbol = loadImage(`hungerSymbol.png`);
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
   textAlign(CENTER, CENTER);
-
   // creating classes
   let randomNumber = round(random(0, 9));
   newCreature = new Creature(width / 2, height / 2, creatureTypes[randomNumber][1]);
