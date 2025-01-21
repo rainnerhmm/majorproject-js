@@ -19,15 +19,17 @@
 
 // the class will be split into sub classes that represent its lifestate, egg, young, adult, old
 
+let scaler = 0.07;
+
 class Creature {
   constructor(x, y, creature, sound) {
     this.x = x;
     this.y = y;
     this.counter = 0;
-    this.egg = CREATURE_EGG;
+    this.egg = creatureTypes[10][0];
     this.creature = creature;
     this.sound = sound;
-    this.death = CREATURE_GRAVE;
+    this.death = creatureTypes[11][0];
     this.status = this.egg;
     this.name = ``;
     this.health = MAX_HEALTH;
@@ -40,18 +42,20 @@ class Creature {
   }
 
   display() {
+    imageMode(CENTER);
     fill(`black`);
     // creature life cycle
     textSize(windowWidth / 5);
-    text(this.status, this.x, this.y);
 
     // creature click counter
-    if (this.status === CREATURE_EGG) {
+    if (this.status === this.egg) {
+      image(creatureTypes[10][1], this.x, this.y);
       textSize(windowWidth / 10);
       text(this.counter, this.x, this.y);
     }
 
     if (this.status === this.creature) {
+      image(creatureTypes[randomNumber][1], this.x, this.y);
       textSize(windowWidth / 25);
       text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
 
@@ -63,7 +67,7 @@ class Creature {
 
       fill(`black`);
       arc(width, height, height * 0.5, height * 0.5, PI, PI + HALF_PI);
-      image(healthSymbol, width * 0.919, height * 0.84, healthSymbol.width / 6, healthSymbol.height / 6);
+      image(healthSymbol, width * 0.95, height * 0.9, scaler * width, scaler * healthSymbol.height * width / healthSymbol.width);
 
       push();
       // hunger meter
@@ -76,15 +80,19 @@ class Creature {
       fill(`black`);
       arc(0, height, height * 0.5, height * 0.5, PI, PI + HALF_PI);
       pop();
-      image(hungerSymbol, width * 0.01, height * 0.82, hungerSymbol.width / 6, hungerSymbol.height / 6);
+      image(hungerSymbol, width * 0.05, height * 0.9, scaler * width, scaler * hungerSymbol.height * width / hungerSymbol.width);
+    }
+
+    if (this.status === this.death) {
+      image(creatureTypes[11][1], this.x, this.y);
     }
   }
 
   life() {
-    if (this.status === CREATURE_EGG || this.status === this.creature) {
+    if (this.status === this.egg || this.status === this.creature) {
       soundEffects();
     }
-    if (this.status === CREATURE_EGG) { // code for the egg state of your creatures life
+    if (this.status === this.egg) { // code for the egg state of your creatures life
       this.counter++;
       if (this.counter >= 5) {
         console.log(`lifeSound`);
@@ -209,9 +217,6 @@ class Menus {
 
 let newCreature, theTextSystem, theMenus;
 
-const CREATURE_EGG = `🥚`;
-const CREATURE_GRAVE = `🪦`;
-
 let textFlag = false;
 let keyboardState = `null`;
 
@@ -226,16 +231,18 @@ let hitSound, rockSound, chickenSound, alienSound, dogSound, catSound, horseSoun
 let healthSymbol, hungerSymbol;
 
 let creatureTypes = [
-  [`rock`, `🪨`],
-  [`human`, `🧍`],
-  [`dog`, `🐕`],
-  [`cat`, `🐈`],
-  [`horse`, `🐎`],
-  [`chicken`, `🐓`],
-  [`sheep`, `🐑`],
-  [`penguin`, `🐧`],
-  [`dinosaur`, `🦖`],
-  [`alien`, `🛸`]
+  [`rock`],
+  [`human`],
+  [`dog`],
+  [`cat`],
+  [`horse`],
+  [`chicken`],
+  [`sheep`],
+  [`penguin`],
+  [`dinosaur`],
+  [`alien`],
+  [`egg`],
+  [`grave`]
 ];
 let randomNumber;
 
@@ -243,38 +250,51 @@ function preload() {
   hitSound = loadSound(`assets/sounds/hitSound.mp3`);
   hitSound.amp(0.5);
 
+  creatureTypes[10].push(loadImage(`assets/graphics/eggGraphic.png`));
+  creatureTypes[11].push(loadImage(`assets/graphics/graveGraphic.png`));
+
+  creatureTypes[0].push(loadImage(`assets/graphics/rockGraphic.png`)); // rockGraphic
   creatureTypes[0].push(loadSound(`assets/sounds/rockSound.mp3`)); // rockSound
   creatureTypes[0][2].amp(1.5);
-  
+
+  creatureTypes[1].push(loadImage(`assets/graphics/humanGraphic.png`)); // humanGraphic
   creatureTypes[1].push(loadSound(`assets/sounds/humanSound.mp3`)); // humanSound
   creatureTypes[1][2].amp(1.5);
 
+  creatureTypes[2].push(loadImage(`assets/graphics/dogGraphic.png`)); // dogGraphic
   creatureTypes[2].push(loadSound(`assets/sounds/dogSound.mp3`)); // dogSound
   creatureTypes[2][2].amp(1.5);
 
+  creatureTypes[3].push(loadImage(`assets/graphics/catGraphic.png`)); // catGraphic
   creatureTypes[3].push(loadSound(`assets/sounds/catSound.mp3`)); // catSound
   creatureTypes[3][2].amp(1.5);
 
+  creatureTypes[4].push(loadImage(`assets/graphics/horseGraphic.png`)); // horseGraphic
   creatureTypes[4].push(loadSound(`assets/sounds/horseSound.mp3`)); // horseSound
   creatureTypes[4][2].amp(1.5);
 
+  creatureTypes[5].push(loadImage(`assets/graphics/chickenGraphic.png`)); // chickenGraphic
   creatureTypes[5].push(loadSound(`assets/sounds/chickenSound.mp3`)); // chickenSound
   creatureTypes[5][2].amp(1.5);
 
+  creatureTypes[6].push(loadImage(`assets/graphics/sheepGraphic.png`)); // sheepGraphic
   creatureTypes[6].push(loadSound(`assets/sounds/sheepSound.mp3`)); // sheepSound
   creatureTypes[6][2].amp(1.5);
 
+  creatureTypes[7].push(loadImage(`assets/graphics/penguinGraphic.png`)); // penguinGraphic
   creatureTypes[7].push(loadSound(`assets/sounds/penguinSound.mp3`)); // penguinSound
-  creatureTypes[7][2].amp(1.5);
+  creatureTypes[7][2].amp(1);
 
+  creatureTypes[8].push(loadImage(`assets/graphics/dinoGraphic.png`)); // dinoGraphic
   creatureTypes[8].push(loadSound(`assets/sounds/dinoSound.mp3`)); // dinoSound
   creatureTypes[8][2].amp(1.5);
 
+  creatureTypes[9].push(loadImage(`assets/graphics/alienGraphic.png`)); // alienGraphic
   creatureTypes[9].push(loadSound(`assets/sounds/alienSound.mp3`)); // alienSound
   creatureTypes[9][2].amp(1.5);
 
   deathSound = loadSound(`assets/sounds/deathSound.mp3`);
-  deathSound.amp(0.3);
+  deathSound.amp(1);
 
   healthSymbol = loadImage(`assets/graphics/healthSymbol.png`);
   hungerSymbol = loadImage(`assets/graphics/hungerSymbol.png`);
@@ -293,32 +313,13 @@ function setup() {
   theMenus.state = `title`;
 }
 
-function draw() {
-  background(220);
-  if (theMenus.state === `title`) {
-    theMenus.update();
-  }
-
-  if (theMenus.state === `play`) {
-    newCreature.update();
-    theTextSystem.disp();
-    // displays notable info (debug only)
-    if (theMenus.state === `paused`) {
-      theMenus.update();
-      dispFrameRate();
-      text(keyboardState, windowWidth / 2, windowHeight / 1.1);
-
-    }
-  }
-}
-
 function soundEffects() {
-  if (newCreature.status === CREATURE_EGG || newCreature.status === newCreature.creature) {
+  if (newCreature.status === newCreature.egg || newCreature.status === newCreature.creature) {
     console.log(`hitSound`);
     hitSound.play();
   }
-  
-  if (newCreature.status === CREATURE_GRAVE) {
+
+  if (newCreature.status === newCreature.death) {
     console.log(`deathSound`);
     deathSound.play();
   }
@@ -385,6 +386,25 @@ function keyPressed() {
     else if (keyCode === 13) {
       keyboardState = `enter`;
       theTextSystem.enter();
+    }
+  }
+}
+
+function draw() {
+  background(220);
+  if (theMenus.state === `title`) {
+    theMenus.update();
+  }
+
+  if (theMenus.state === `play`) {
+    newCreature.update();
+    theTextSystem.disp();
+    // displays notable info (debug only)
+    if (theMenus.state === `paused`) {
+      theMenus.update();
+      dispFrameRate();
+      text(keyboardState, windowWidth / 2, windowHeight / 1.1);
+
     }
   }
 }
