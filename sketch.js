@@ -1,23 +1,20 @@
 // majorproject
 // Rainn Morphy
 // Nov 18th, 2024
-//
-// Extra for Experts:
-// - describe what you did to take this project `above and beyond`
 
-// links 
+// links I never ended up using
 // https://p5js.org/examples/
 // https://editor.p5js.org/codingtrain/collections
 // https://editor.p5js.org/codingtrain/sketches/hZWcc0Vi-
 // https://editor.p5js.org/codingtrain/sketches/YzFpEGdsl
 // https://editor.p5js.org/michellu0929/sketches/KL0ydodUa
 // https://p5js.org/tutorials/creating-styling-html/
-//
+
 
 // Creature Class is responsible for the location of creature, its lifestate, displaying it, the info
 // Health, hunger, and whatever other meters
 
-// the class will be split into sub classes that represent its lifestate, egg, young, adult, old
+// the class will be split into sub classes that represent its lifestate, egg, young, adult, old (Didn't do)
 
 let scaler = 0.07;
 
@@ -49,13 +46,13 @@ class Creature {
 
     // creature click counter
     if (this.status === this.egg) {
-      image(creatureTypes[10][1], this.x, this.y);
+      image(creatureTypes[10][1], this.x, this.y, 0.2 * width, 0.2 * creatureTypes[10][1].height * width / creatureTypes[10][1].width);
       textSize(windowWidth / 10);
       text(this.counter, this.x, this.y);
     }
 
     if (this.status === this.creature) {
-      image(creatureTypes[randomNumber][1], this.x, this.y);
+      image(creatureTypes[randomNumber][1], this.x, this.y, 0.3 * width, 0.3 * creatureTypes[randomNumber][1].height * width / creatureTypes[randomNumber][1].width);
       textSize(windowWidth / 25);
       text(`creature name: ${this.name}`, windowWidth / 2, windowHeight / 1.3);
 
